@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Me Plzz...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #000000, #011442);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 1s ease; /* transition background */
+        }
+
+        .box, .final-box {
+            background-color: #ffffff;
+            padding: 50px 80px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            max-width: 90%;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.6), 0 0 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .box p, .final-box p {
+            font-size: 2rem;
+            color: #011442;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 600px) {
+            .box, .final-box {
+                padding: 30px 50px;
+            }
+
+            .box p, .final-box p {
+                font-size: 1.5rem;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: #fff;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #011442;
+        }
+
+        .modal input {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .modal button {
+            padding: 10px 30px;
+            border: none;
+            background: #011442;
+            color: white;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal button:hover {
+            transform: scale(1.1);
+        }
+
+        .final-page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .final-box {
+            transition: transform 0.3s ease;
+            transform: scale(0);
+        }
+
+        .final-box.active {
+            transform: scale(1);
+        }
+
+        #nextBtn {
+            margin-top: 30px;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            background-color: #011442;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 1s ease;
+            cursor: pointer;
+        }
+
+        #nextBtn.show {
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="box" id="clickBox">
+        <p>Click Me Plzz...</p>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2>Halo cantik, nama kamu siapa?</h2>
+            <input type="text" id="nameInput" placeholder="Masukkan nama...">
+            <br>
+            <button id="submitBtn">Submit</button>
+        </div>
+    </div>
+
+    <div class="final-page" id="finalPage">
+        <div class="final-box" id="finalBox">
+            <p id="finalText"></p>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const clickBox = document.getElementById('clickBox');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const submitBtn = document.getElementById('submitBtn');
+        const nameInput = document.getElementById('nameInput');
+        const finalPage = document.getElementById('finalPage');
+        const finalBox = document.getElementById('finalBox');
+        const finalText = document.getElementById('finalText');
+        const nextBtn = document.getElementById('nextBtn');
+
+        let userName = "";
+
+        clickBox.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            nameInput.focus();
+        });
+
+        submitBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if(name){
+                userName = name;
+                modalOverlay.classList.remove('active');
+                document.querySelector('.box').style.display = 'none';
+                showFinalPage();
+            } else {
+                alert('Isi dulu dong namanya 😜');
+            }
+        });
+
+        function showFinalPage() {
+            finalPage.style.display = 'flex';
+            setTimeout(() => {
+                finalBox.classList.add('active');
+                startTyping();
+            }, 300); 
+        }
+
+        async function startTyping() {
+            const message = `halo ${userName}... tau kok ini jadi annoying karna terus terusan diomongin, aku tau becandaku kelewatan, bukan maksudku gitu, tapi ya... emang aku ngga mikir aja, maaf yah ${userName}, aku ngga ganggu lagi nanti sampe kamu chat lagi (kecuali urusan abinara mungkin), rasanya ngga enak kalo ada konflik gini, tapi aku ngga mau maksa kamu maafin kalo kamu ngerasa candaanku kelewatan banget 🙏🏻🙏🏻🙏🏻`;
+            const words = message.split(" ");
+            let displayWords = [];
+
+            for (let i = 0; i < words.length; i++) {
+                displayWords.push(words[i]);
+                if (displayWords.length > 10) {
+                    displayWords.shift();
+                }
+                finalText.innerText = displayWords.join(" ");
+                await new Promise(res => setTimeout(res, 600));
+            }
+
+            nextBtn.classList.add('show');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            window.location.href = "flower.html";
+        });
+
+    </script>
+</body>
+</html>
